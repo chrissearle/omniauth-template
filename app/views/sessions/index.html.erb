@@ -1,3 +1,4 @@
+<% providers = LOGIN_PROVIDERS.dup %>
 <% if current_user %>
     <h2>My user</h2>
     <p>
@@ -5,37 +6,36 @@
       <br/>
       <%= current_user.email %>
     </p>
-    <h2>My logins</h2>
+    <h2>My Logins</h2>
     <% current_user.authentications.each do |auth| %>
-        <div class="provider">
-          <%= image_tag("icons/#{auth.provider}-64x64.png",
-                                :alt => auth.provider.capitalize,
-                                :title => auth.provider.capitalize) %>
-          <p>
-            <%= auth.provider.capitalize %>
+        <% providers.reject! { |provider| provider.to_s == auth.provider } %>
+        <div class="login">
+          <%= image_tag("icons/#{auth.provider}_32.png",
+                        :alt => auth.provider.capitalize,
+                        :title => auth.provider.capitalize) %>
+<div>              <%= auth.provider.capitalize %>
             <br/>
             <%= auth.uid %>
             <br/>
             <%= auth.name %>
             <br/>
-            <%= auth.email %>
-          </p>
+            <%= auth.email %></div>
         </div>
     <% end %>
     <p style="clear: both"></p>
-    <h2>Add a login</h2>
+    <% unless providers.empty? %>
+        <h2>Add a login</h2>
+    <% end %>
 <% else %>
     <h2>Log in via one of the following</h2>
 <% end %>
-<% LOGIN_PROVIDERS.each do |provider| %>
+<% providers.each do |provider| %>
     <div class="provider">
-      <%= link_to image_tag("icons/#{provider.to_s}-64x64.png",
-                            :alt => t('link.login.with', :provider => provider.to_s.capitalize),
-                            :title => t('link.login.with', :provider => provider.to_s.capitalize)),
+      <%= link_to image_tag("icons/#{provider.to_s}_32.png",
+                            :alt => provider.to_s.capitalize,
+                            :title => provider.to_s.capitalize),
                   "/auth/#{provider.to_s.downcase}" %>
-      <p>
-        <%= link_to 'Log in with #{provider.to_s.capitalize}',
-                    "/auth/#{provider.to_s.downcase}" %>
-      </p>
+      <%= link_to provider.to_s.capitalize,
+                  "/auth/#{provider.to_s.downcase}" %>
     </div>
 <% end %>
