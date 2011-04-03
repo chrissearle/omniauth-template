@@ -6,9 +6,9 @@ class SessionsController < ApplicationController
     auth = request.env["omniauth.auth"]
 
     if current_user
-      authentication = current_user.authentications.find_by_provider_and_uid(auth["provider"], auth["uid"]) || Authentication.add_with_omniauth(current_user, auth)
+      authentication = current_user.authentications.find_by_provider_and_uid(auth["provider"], auth["uid"].to_s) || Authentication.add_with_omniauth(current_user, auth)
     else
-      authentication = Authentication.find_by_provider_and_uid(auth["provider"], auth["uid"]) || Authentication.create_with_omniauth(auth)
+      authentication = Authentication.find_by_provider_and_uid(auth["provider"], auth["uid"].to_s) || Authentication.create_with_omniauth(auth)
     end
 
     session[:user_id] = authentication.user_id
